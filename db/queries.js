@@ -66,8 +66,8 @@ function getAllUsers(req, res, next) {
 
 function getSingleUser(req, res, next) {
   db
-    .one("SELECT * FROM users WHERE id=${id}", {
-      id: req.params.id
+    .one("SELECT * FROM users WHERE username=${username}", {
+      username: req.params.username
     })
     .then(data => {
       res.status(200).json({ user: data });
@@ -84,10 +84,11 @@ function getSingleUser(req, res, next) {
 function editUser(req, res, next) {
   db
     .none(
-      "UPDATE users SET email=${email}, full_name=${full_name} WHERE email=${email}",
+      "UPDATE users SET email=${email}, full_name=${full_name} WHERE username=${username}",
       {
         email: req.body.email,
         full_name: req.body.full_name,
+        username: req.user.username,
       }
     )
     .then(() => {
@@ -177,8 +178,9 @@ function deleteGoal(req, res, next){
 
 function createGoal(req, res, next){
   db.none(
-      "INSERT INTO goals ('weekly_salary', 'goal_amount', 'weekly_contribution', 'current_amount', 'complete') VALUES(${weekly_salary}, ${goal_amount}, ${weekly_contribution}, ${current_amount}, ${complete})",
+      "INSERT INTO goals ('user_id', weekly_salary', 'goal_amount', 'weekly_contribution', 'current_amount', 'complete') VALUES(${user_id}, ${weekly_salary}, ${goal_amount}, ${weekly_contribution}, ${current_amount}, ${complete})",
       {
+        user_id: req.user.id,
         weekly_salary: req.body.weekly_salary,
         goal_amount: req.body.goal_amount,
         weekly_contribution: req.body.weekly_contribution,
