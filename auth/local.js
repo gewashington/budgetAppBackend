@@ -12,8 +12,8 @@ const options = {}
 init()
 
 passport.use(
-    new localStrategy(options, (username, password, done ) => {
-        db.any ('SELECT * FROM users WHERE username = $1', [username])
+    new localStrategy(options, (email, password, done ) => {
+        db.any ('SELECT * FROM users WHERE email = $1', [email])
         .then((rows) => {
             const user = rows[0]
             if(!user) {

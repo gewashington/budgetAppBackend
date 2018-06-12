@@ -7,13 +7,11 @@ function registerUser(req, res, next) {
   const hash = authHelpers.createHashPassword(req.body.password);
   db
     .none(
-      "INSERT INTO users (username, email, password_digest, bio, profile_pic) VALUES (${username}, $(email), ${password_digest}, ${bio}, ${profile_pic})",
+      "INSERT INTO users (full_name, email, password_digest) VALUES (${full_name}, $(email), ${password_digest})",
       {
-        username: req.body.username,
         email: req.body.email,
         password_digest: hash,
-        bio: req.body.bio,
-        profile_pic: req.body.profile_pic
+        full_name: req.body.full_name,
       }
     )
     .then(() => {
@@ -36,8 +34,8 @@ function logoutUser(req, res, next) {
 
 function getUser(req, res, next) {
   db
-    .one("SELECT * FROM users WHERE username=${username}", {
-      username: req.user.username
+    .one("SELECT * FROM users WHERE email=${email}", {
+      email: req.user.email
     })
     .then(data => {
       res.status(200).json({ user: data });
@@ -86,12 +84,10 @@ function getSingleUser(req, res, next) {
 function editUser(req, res, next) {
   db
     .none(
-      "UPDATE users SET email=${email}, bio=${bio}, profile_pic=${profile_pic} WHERE username=${username}",
+      "UPDATE users SET email=${email}, full_name=${full_name} WHERE email=${email}",
       {
         email: req.body.email,
-        bio: req.body.bio,
-        profile_pic: req.body.profile_pic,
-        username: req.user.username
+        full_name: req.body.full_name,
       }
     )
     .then(() => {
@@ -111,7 +107,7 @@ function editUser(req, res, next) {
 // GOALS ============================
 function getGoals(req, res, next) {
   db
-    .any("SELECT * FROM goals WHERE user_id=${user_id}", {user_id: req.user.id})
+    .any("SELECT * FROM goals")
     .then(data => {
       res.status(200).json({ goals: data });
     })
@@ -166,7 +162,7 @@ function editGoal(req, res, next){
 }
 
 function deleteGoal(req, res, next){
-  db.result('DELETE FROM goals WHERE id=${id}', {id: req.params.photo_id})
+  db.result('DELETE FROM goals WHERE id=${id}', {id: req.body.id})
     .then(function (result) {
       res.status(200)
         .json({

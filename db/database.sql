@@ -21,6 +21,6 @@ CREATE TABLE goals (
   complete BOOLEAN
 );
 
-INSERT INTO users (email, full_name, password_digest) VALUES ('gloria@mail.com', 'Gloria Washington', '123');
+INSERT INTO users (email, full_name, password_digest) VALUES ('gloria@mail.com', 'Gloria Washington', '$2a$10$DJ1.rBa4/w0cF8GgoAfoK.R75NTUQRxo.Me.WlKepfRKYrthFQrnC');
 
 INSERT INTO goals (user_id, weekly_salary, goal_amount, weekly_contribution, current_amount, complete) VALUES (1, 1000, 5000, 150, 0, false);
