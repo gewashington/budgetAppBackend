@@ -43,7 +43,7 @@ function getUser(req, res, next) {
     .catch(err => {
       console.log(err);
       res.status(500).json({
-        data: "Error",
+        message: "Error",
         err
       });
     });
@@ -58,7 +58,7 @@ function getAllUsers(req, res, next) {
     .catch(err => {
       console.log(err);
       res.status(500).json({
-        data: "Error",
+        message: "Error",
         err
       });
     });
@@ -75,7 +75,7 @@ function getSingleUser(req, res, next) {
     .catch(err => {
       console.log(err);
       res.status(500).json({
-        data: "Error",
+        message: "Error",
         err
       });
     });
@@ -98,7 +98,7 @@ function editUser(req, res, next) {
     })
     .catch(err => {
       res.status(500).json({
-        message: 'Registration Failed',
+        message: 'Update Failed',
         err
       });
     });
@@ -115,7 +115,7 @@ function getGoals(req, res, next) {
     .catch(err => {
       console.log(err);
       res.status(500).json({
-        data: "Error",
+        message: "Could not get goal",
         err
       });
     });
@@ -123,14 +123,14 @@ function getGoals(req, res, next) {
 
 function getOneGoal(req, res, next){
   db
-    .one("SELECT * FROM goals where id=${id}", {id: req.body.id})
+    .one("SELECT * FROM goals where id=${id}", {id: req.params.id})
     .then(data => {
       res.status(200).json({ goal: data });
     })
     .catch(err => {
       console.log(err);
       res.status(500).json({
-        data: "Error",
+        message: "Could not get goal",
         err
       });
     });
@@ -139,14 +139,14 @@ function getOneGoal(req, res, next){
 function editGoal(req, res, next){
   db
   .none(
-      "UPDATE goals SET 'weekly_salary'=${weekly_salary}, 'goal_amount'=${goal_amount}, 'weekly_contribution'=${weekly_contribution}, 'current_amount'=${current_amount}, 'complete'=${complete} WHERE id=${index}",
+      "UPDATE goals SET weekly_salary=${weekly_salary}, goal_amount=${goal_amount}, weekly_contribution=${weekly_contribution}, current_amount=${current_amount}, complete=${complete} WHERE id=${id}",
       {
-        weekly_salary: req.body.weekly_salary,
-        goal_amount: req.body.goal_amount,
-        weekly_contribution: req.body.weekly_contribution,
+        weekly_salary: parseInt(req.body.weekly_salary),
+        goal_amount: parseInt(req.body.goal_amount),
+        weekly_contribution: parseInt(req.body.weekly_contribution),
         complete: req.body.complete,
-        id: req.body.id,
-        current_amount: req.body.current_amount
+        id: parseInt(req.params.id),
+        current_amount: parseInt(req.body.current_amount)
       }
     )
     .then(() => {
@@ -156,14 +156,14 @@ function editGoal(req, res, next){
     })
     .catch(err => {
       res.status(500).json({
-        message: 'Registration Failed',
+        message: 'update failed',
         err
       });
     });
 }
 
 function deleteGoal(req, res, next){
-  db.result('DELETE FROM goals WHERE id=${id}', {id: req.body.id})
+  db.result('DELETE FROM goals WHERE id=${id}', {id: req.params.id})
     .then(function (result) {
       res.status(200)
         .json({
@@ -171,31 +171,35 @@ function deleteGoal(req, res, next){
           message: `Removed goal`
         });
     })
-    .catch(function (err) {
-      return next(err);
+    .catch(err => {
+      res.status(500).json({
+        message: 'Delete Failed',
+        err
+      });
     });
 }
 
 function createGoal(req, res, next){
+  console.log(parseInt(req.body.weekly_salary))
   db.none(
-      "INSERT INTO goals ('user_id', weekly_salary', 'goal_amount', 'weekly_contribution', 'current_amount', 'complete') VALUES(${user_id}, ${weekly_salary}, ${goal_amount}, ${weekly_contribution}, ${current_amount}, ${complete})",
+      "INSERT INTO goals (user_id, weekly_salary, goal_amount, weekly_contribution, current_amount, complete) VALUES(${user_id}, ${weekly_salary}, ${goal_amount}, ${weekly_contribution}, ${current_amount}, ${complete})",
       {
-        user_id: req.user.id,
-        weekly_salary: req.body.weekly_salary,
-        goal_amount: req.body.goal_amount,
-        weekly_contribution: req.body.weekly_contribution,
-        complete: req.body.complete,
-        current_amount: req.body.current_amount
+        user_id: parseInt(req.user.id),
+        weekly_salary: parseInt(req.body.weekly_salary),
+        goal_amount: parseInt(req.body.goal_amount),
+        weekly_contribution: parseInt(req.body.weekly_contribution),
+        complete: false,
+        current_amount: parseInt(req.body.current_amount)
       }
     )
     .then(() => {
       res.status(200).json({
-        message: "successfully updated goal"
+        message: "successfully created goal"
       });
     })
     .catch(err => {
       res.status(500).json({
-        message: 'Update Failed',
+        message: 'Goal creation Failed',
         err
       });
     });
