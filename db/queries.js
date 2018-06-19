@@ -7,11 +7,12 @@ function registerUser(req, res, next) {
   const hash = authHelpers.createHashPassword(req.body.password);
   db
     .none(
-      "INSERT INTO users (full_name, email, password_digest) VALUES (${full_name}, $(email), ${password_digest})",
+      "INSERT INTO users (full_name, username, email, password_digest) VALUES (${full_name}, ${username}, $(email), ${password_digest})",
       {
         email: req.body.email,
         password_digest: hash,
         full_name: req.body.full_name,
+        username: req.body.username
       }
     )
     .then(() => {
@@ -20,6 +21,7 @@ function registerUser(req, res, next) {
       });
     })
     .catch(err => {
+      console.log(err)
       res.status(500).json({
         message: `Registration Failed    `,
         err
