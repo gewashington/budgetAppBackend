@@ -108,7 +108,8 @@ function editUser(req, res, next) {
 // GOALS ============================
 function getGoals(req, res, next) {
   db
-    .any("SELECT * FROM goals")
+    .any("SELECT * FROM goals WHERE user_id =${user_id}",
+    {user_id: req.user.id})
     .then(data => {
       res.status(200).json({ goals: data });
     })

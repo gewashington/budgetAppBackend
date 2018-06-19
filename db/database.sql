@@ -24,4 +24,4 @@ CREATE TABLE goals (
 
 INSERT INTO users (email, username, full_name, password_digest) VALUES ('gloria@mail.com', 'gewashington', 'Gloria Washington', '$2a$10$DJ1.rBa4/w0cF8GgoAfoK.R75NTUQRxo.Me.WlKepfRKYrthFQrnC');
 
-INSERT INTO goals (user_id, weekly_salary, goal_amount, weekly_contribution, current_amount, complete) VALUES (1, 1000, 5000, 150, 0, false);
+INSERT INTO goals (user_id, weekly_salary, goal_amount, weekly_contribution, current_amount, complete) VALUES (1, 1000, 5000, 150, 150, false);
