@@ -158,9 +158,11 @@ function editGoal(req, res, next){
       });
     })
     .catch(err => {
+      console.log(err)
       res.status(500).json({
         message: 'update failed',
         err
+        
       });
     });
 }
